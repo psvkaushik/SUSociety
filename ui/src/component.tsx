@@ -1,6 +1,8 @@
 import React from "react";
-import { AppBar, Paper, Typography } from "@mui/material";
+import { AppBar, Paper, Typography, colors } from "@mui/material";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { color } from "@mui/system";
+import { green } from "@mui/material/colors";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -23,7 +25,7 @@ export default class Component extends React.Component<any, any> {
       >
         <Paper elevation={3} style={{ height: "100%", width: "100%" }}>
           <div id="title" style={{ height: "30%", width: "100%" }}>
-            <AppBar position="static">
+            <AppBar position="static" style={{backgroundColor: "#8bc34a"}}>
               <Typography variant="h2" noWrap>
                 Greenify Me!!
               </Typography>
@@ -34,7 +36,7 @@ export default class Component extends React.Component<any, any> {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "space-around",
+                justifyContent: "center",
               }}
             >
               <Typography variant="h3" style={{ width: "fit-content" }}>
