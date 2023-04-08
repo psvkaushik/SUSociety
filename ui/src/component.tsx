@@ -12,6 +12,8 @@ import {
   MenuItem,
   CardActions,
   CardContent,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import {
   CircularProgressbarWithChildren,
@@ -117,25 +119,34 @@ export default class Component extends React.Component<any, any> {
           );
         }
         menu = (
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            label={"Earn upto " + this.state.tasks[i].mP}
-            onChange={(event) => {
-              let temp2 = this.state.scores;
-              temp2[i] = parseInt(event.target.value as any);
-              let updated_score = 0;
-              for (let k = 0; k < temp2.length; k++) updated_score += temp2[k];
-              this.setState({
-                ...this.state,
-                scores: temp2,
-                currentScore: updated_score,
-              });
-              this.updateScore();
-            }}
-          >
-            {options}
-          </Select>
+          <React.Fragment>
+            <FormControl sx={{ m: 1, minWidth: 320 }}>
+              <InputLabel id="demo-simple-select-label">
+                {"Earn upto " + this.state.tasks[i].mP}
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                label={"Earn upto " + this.state.tasks[i].mP}
+                variant="filled"
+                onChange={(event) => {
+                  let temp2 = this.state.scores;
+                  temp2[i] = parseInt(event.target.value as any);
+                  let updated_score = 0;
+                  for (let k = 0; k < temp2.length; k++)
+                    updated_score += temp2[k];
+                  this.setState({
+                    ...this.state,
+                    scores: temp2,
+                    currentScore: updated_score,
+                  });
+                  this.updateScore();
+                }}
+              >
+                {options}
+              </Select>
+            </FormControl>
+          </React.Fragment>
         );
       } else {
         menu = (
@@ -239,7 +250,7 @@ export default class Component extends React.Component<any, any> {
           <div id="title" style={{ width: "100%" }}>
             <AppBar position="static" style={{ backgroundColor: "#8bc34a" }}>
               <Typography variant="h2" noWrap>
-                Greenify Me!!
+                GreenBoard
               </Typography>
             </AppBar>
           </div>
