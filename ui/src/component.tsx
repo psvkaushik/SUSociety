@@ -10,6 +10,8 @@ import {
   Button,
   Select,
   MenuItem,
+  CardActions,
+  CardContent,
 } from "@mui/material";
 import {
   CircularProgressbarWithChildren,
@@ -91,16 +93,15 @@ export default class Component extends React.Component<any, any> {
       });
   };
 
-
   private updateScore = () => {
     fetch("http://10.153.54.223:5000/users/6431cc23e7b681cd654cfa19", {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-type': 'application/json'
+        "Content-type": "application/json",
       },
-      body: JSON.stringify({'score': this.state.currentScore})
-    }).then(_ => this.getLeaderboardData())
-  }
+      body: JSON.stringify({ score: this.state.currentScore }),
+    }).then((_) => this.getLeaderboardData());
+  };
 
   private getTasks = () => {
     let contents: any[] = [];
@@ -166,10 +167,15 @@ export default class Component extends React.Component<any, any> {
 
       let temp = (
         <div style={{ marginTop: "10px", marginBottom: "20px" }}>
-          <Card>
-            <Typography variant="h4">{this.state.tasks[i].cat}</Typography>
-            <Typography variant="h5">{this.state.tasks[i].task}</Typography>
-            {menu}
+          <Card
+            style={{ margin: "10px", border: "2px" }}
+            sx={{ boxShadow: 12, borderRadius: "2px" }}
+          >
+            <CardContent>
+              <Typography variant="h4">{this.state.tasks[i].cat}</Typography>
+              <Typography variant="h5">{this.state.tasks[i].task}</Typography>
+            </CardContent>
+            <CardActions>{menu}</CardActions>
           </Card>
           <Divider style={{ marginTop: "5px" }} />
         </div>
