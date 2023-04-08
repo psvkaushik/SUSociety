@@ -13,6 +13,12 @@ import {
 } from "react-circular-progressbar";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -23,11 +29,51 @@ export default class Component extends React.Component<any, any> {
     };
   }
 
+  private getTasks = () => {
+    return <p>Tasks</p>
+  }
+
+  private getLeaderboard = () => {
+
+    const rows = [
+      {'name': 'first', 'rank': 10},
+      {'name': 'second', 'rank': 20},
+    ]
+
+    return ( 
+      <div>
+        <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">Rank</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.rank}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+      </div>
+    )
+  }
+
   private getData = () => {
     if (this.state.bottomView === 0) {
-      return <p>TAsks</p>;
+      return this.getTasks();
     } else {
-      return <p>Leaderboard</p>;
+      return this.getLeaderboard();
     }
   };
 
