@@ -5,8 +5,12 @@ from bson import json_util
 # create Flask app
 app = Flask(__name__)
 
+# read password from file
+with open('password.txt', 'r') as f:
+    password = f.read()
+
 # connect to MongoDB database
-client = MongoClient("mongodb+srv://krishnasaurabh:<password>@susociety.yftuk6h.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient(f"mongodb+srv://krishnasaurabh:{password}@susociety.yftuk6h.mongodb.net/?retryWrites=true&w=majority")
 db = client.test
 db = client["sustainable_society"]
 collection = db["leaderbaord"]
