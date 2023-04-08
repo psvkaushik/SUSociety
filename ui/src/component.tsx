@@ -1,18 +1,35 @@
 import React from "react";
-import { AppBar, Paper, Typography } from "@mui/material";
 import {
-  CircularProgressbar,
+  AppBar,
+  Paper,
+  Typography,
+  BottomNavigation,
+  BottomNavigationAction,
+  Divider,
+} from "@mui/material";
+import {
   CircularProgressbarWithChildren,
   buildStyles,
 } from "react-circular-progressbar";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       currentScore: 10,
+      bottomView: 0,
     };
   }
+
+  private getData = () => {
+    if (this.state.bottomView === 0) {
+      return <p>TAsks</p>;
+    } else {
+      return <p>Leaderboard</p>;
+    }
+  };
 
   public render(): React.ReactNode {
     return (
@@ -65,11 +82,39 @@ export default class Component extends React.Component<any, any> {
                       trailColor: "#FFCCBC",
                       backgroundColor: "#3e98c7",
                     })}
-                  >
-                  </CircularProgressbarWithChildren>
+                  ></CircularProgressbarWithChildren>
                 </div>
               </div>
             </AppBar>
+            <Divider />
+            {this.getData()}
+            <Paper
+              sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+              elevation={3}
+            >
+              <div>
+                <BottomNavigation
+                  showLabels
+                  value={this.state.bottomView}
+                  onChange={(event, newValue) => {
+                    this.setState({
+                      ...this.state,
+                      bottomView: newValue,
+                    });
+                  }}
+                >
+                  <BottomNavigationAction
+                    label="Tasks"
+                    icon={<TaskAltIcon />}
+                  />
+                  <BottomNavigationAction
+                    label="Leaderboard"
+                    icon={<LeaderboardIcon />}
+                  />
+                </BottomNavigation>
+              </div>
+            </Paper>
+            <Divider />
           </div>
         </Paper>
       </div>
