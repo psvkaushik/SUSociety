@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from pymongo import MongoClient
-from bson import json_util
+from bson import ObjectId, json_util
 
 leaderboard_bp = Blueprint('leaderboard', __name__, url_prefix='/users')
 
@@ -17,6 +17,7 @@ collection = db.leaderbaord
 @leaderboard_bp.route('/data', methods=['GET'])
 def get_data():
     data = list(collection.find())
+    data.sort(key=lambda x: x['score'], reverse=True)
     return json_util.dumps(data)
 
 # define route to add data to MongoDB
@@ -24,4 +25,13 @@ def get_data():
 def add_data():
     new_data = request.get_json()
     collection.insert_one(new_data)
+    return jsonify({'success': True})
+
+# define route to update data in MongoDB
+@leaderboard_bp.route('/<user_id>', methods=['PUT'])
+def update_data(user_id):
+    updated_data = request.get_json()
+    print(updated_data)
+    user_id = ObjectId(user_id)
+    collection.update_one({'_id': user_id}, {'$set': updated_data})
     return jsonify({'success': True})
