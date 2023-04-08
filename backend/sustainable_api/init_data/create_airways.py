@@ -17,6 +17,9 @@ flights = [
     {'airline': 'United', 'emissions': 56},
 ]
 
+# delete all data from MongoDB
+db.flights.delete_many({})
+
 # insert dummy data into MongoDB
 collection = db.flights
 collection.insert_many(flights)
