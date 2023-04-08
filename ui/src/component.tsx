@@ -13,12 +13,12 @@ import {
 } from "react-circular-progressbar";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -26,48 +26,67 @@ export default class Component extends React.Component<any, any> {
     this.state = {
       currentScore: 10,
       bottomView: 0,
+      leaderboard: []
     };
   }
 
-  private getTasks = () => {
-    return <p>Tasks</p>
+  public componentDidMount(): void {
+      this.setData()
   }
+
+  private setData = () => {
+    fetch("http://10.153.54.223:5000/users/data")
+      .then((response) => response.json())
+      .then((data) => {
+        let temp: any[] = [];
+        for ( let i=0 ; i< data.length ; i++ ) {
+          let temp2 = {
+            'name': data[i].name,
+            'score': data[i].score
+          };
+          temp.push(temp2)
+        }
+        this.setState({
+          ...this.state,
+          leaderboard: temp
+        })
+      })
+  };
+
+  private getTasks = () => {
+    return <p>Tasks</p>;
+  };
 
   private getLeaderboard = () => {
-
-    const rows = [
-      {'name': 'first', 'rank': 10},
-      {'name': 'second', 'rank': 20},
-    ]
-
-    return ( 
+    let rows = this.state.leaderboard;
+    return (
       <div>
         <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="right">Rank</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.rank}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell align="right">Score</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((row: any) => (
+                <TableRow
+                  key={row.name}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.name}
+                  </TableCell>
+                  <TableCell align="right">{row.score}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
-    )
-  }
+    );
+  };
 
   private getData = () => {
     if (this.state.bottomView === 0) {
