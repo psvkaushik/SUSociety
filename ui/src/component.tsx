@@ -33,6 +33,7 @@ export default class Component extends React.Component<any, any> {
       leaderboard: [],
       tasks: [],
       scores: [],
+      maxPoints: 0,
     };
   }
 
@@ -45,9 +46,10 @@ export default class Component extends React.Component<any, any> {
     fetch("http://10.153.54.223:5000/tasks/data")
       .then((response) => response.json())
       .then((data) => {
-        console.log("received data : ", data)
+        let gsum = 0;
+        console.log("received data : ", data);
         let temp: any[] = [];
-
+        let temp3: any[] = [];
         for (let i = 0; i < data.length; i++) {
           let temp2 = {
             cat: data[i].category,
@@ -57,11 +59,15 @@ export default class Component extends React.Component<any, any> {
           };
 
           temp.push(temp2);
+          temp3.push(0);
+          gsum += temp2.mP;
         }
 
         this.setState({
           ...this.state,
           tasks: temp,
+          scores: temp3,
+          maxPoints: gsum,
         });
       });
   };
@@ -88,50 +94,74 @@ export default class Component extends React.Component<any, any> {
   private getTasks = () => {
     let contents: any[] = [];
     for (let i = 0; i < this.state.tasks.length; i++) {
-      let options: any[] = [];
-      for (let j = 0; j < this.state.tasks[i].length; j++) {
-        options.push(
-          <MenuItem value={this.state.tasks[i].options[j].points}>
-            {this.state.tasks[i].options[j].type}
-          </MenuItem>
+      let menu = <React.Fragment />;
+      if (this.state.tasks[i].options) {
+        let options: any[] = [];
+        for (let j = 0; j < this.state.tasks[i].options.length; j++) {
+          options.push(
+            <MenuItem value={this.state.tasks[i].options[j].points}>
+              {this.state.tasks[i].options[j].type}
+            </MenuItem>
+          );
+        }
+        menu = (
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Age"
+            onChange={(event) => {
+              let temp2 = this.state.scores;
+              temp2[i] = parseInt(event.target.value as any);
+
+              let updated_score = 0;
+              for (let k = 0; k < temp2.length; k++) updated_score += temp2[k];
+              this.setState({
+                ...this.state,
+                scores: temp2,
+                currentScore: updated_score,
+              });
+            }}
+          >
+            {options}
+          </Select>
         );
       }
+
       let temp = (
-        <React.Fragment>
+        <div style={{ marginTop: "10px", marginBottom: "20px" }}>
           <Card>
             <Typography variant="h4">{this.state.tasks[i].cat}</Typography>
             <Typography variant="h5">{this.state.tasks[i].task}</Typography>
-            <Button>{"Redeem upto " + this.state.tasks[i].mP}</Button>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              label="Age"
-              onChange={(event) => {
-                let temp2 = this.state.scores;
-                temp2[i] = parseInt(event.target.value as any);
-
-                let updated_score = 0;
-                for (let k = 0; k < temp2.length; k++)
-                  updated_score += temp2[k];
-                this.setState({
-                  ...this.state,
-                  scores: temp2,
-                  currentScore: updated_score,
-                });
+            <Button
+              variant="outlined"
+              onClick={() => {
+                if (this.state.tasks[i].options) {
+                  console.log("FAILED");
+                } else {
+                  console.log("button hard");
+                  let temp2 = this.state.scores;
+                  temp2[i] = this.state.tasks[i].mP;
+                  let updated_score = 0;
+                  for (let k = 0; k < temp2.length; k++)
+                    updated_score += parseInt(temp2[k]);
+                  this.setState({
+                    ...this.state,
+                    scores: temp2,
+                    currentScore: updated_score,
+                  });
+                }
               }}
             >
-              {options}
-            </Select>
+              {"Earn upto " + this.state.tasks[i].mP}
+            </Button>
+            {menu}
           </Card>
-        </React.Fragment>
+          <Divider style={{ marginTop: "5px" }} />
+        </div>
       );
       contents.push(temp);
     }
-    return (
-      <React.Fragment>
-        {contents}
-      </React.Fragment>
-    )
+    return <React.Fragment>{contents}</React.Fragment>;
   };
 
   private getLeaderboard = () => {
@@ -202,7 +232,9 @@ export default class Component extends React.Component<any, any> {
                 }}
               >
                 <Typography variant="h3" style={{ width: "fit-content" }}>
-                  {"Your current score : " + this.state.currentScore + "%"}
+                  {"Your current score : " +
+                    this.state.currentScore +
+                    " points."}
                 </Typography>
                 <div
                   style={{
@@ -214,7 +246,7 @@ export default class Component extends React.Component<any, any> {
                 >
                   <CircularProgressbarWithChildren
                     value={parseInt(this.state.currentScore)}
-                    maxValue={100}
+                    maxValue={this.state.maxPoints}
                     styles={buildStyles({
                       rotation: 0.25,
                       strokeLinecap: "butt",
@@ -230,6 +262,7 @@ export default class Component extends React.Component<any, any> {
             </AppBar>
             <Divider />
             {this.getData()}
+            <Divider style={{marginBottom: '40px'}} />
             <Paper
               sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
               elevation={3}
