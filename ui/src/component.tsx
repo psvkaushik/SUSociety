@@ -6,6 +6,10 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Divider,
+  Card,
+  Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import {
   CircularProgressbarWithChildren,
@@ -26,35 +30,108 @@ export default class Component extends React.Component<any, any> {
     this.state = {
       currentScore: 10,
       bottomView: 0,
-      leaderboard: []
+      leaderboard: [],
+      tasks: [],
+      scores: [],
     };
   }
 
   public componentDidMount(): void {
-      this.setData()
+    this.getLeaderboardData();
+    this.getTaskData();
   }
 
-  private setData = () => {
+  private getTaskData = () => {
+    fetch("http://10.153.54.223:5000/tasks/data")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("received data : ", data)
+        let temp: any[] = [];
+
+        for (let i = 0; i < data.length; i++) {
+          let temp2 = {
+            cat: data[i].category,
+            task: data[i].task,
+            mP: data[i].max_points,
+            options: data[i].options,
+          };
+
+          temp.push(temp2);
+        }
+
+        this.setState({
+          ...this.state,
+          tasks: temp,
+        });
+      });
+  };
+
+  private getLeaderboardData = () => {
     fetch("http://10.153.54.223:5000/users/data")
       .then((response) => response.json())
       .then((data) => {
         let temp: any[] = [];
-        for ( let i=0 ; i< data.length ; i++ ) {
+        for (let i = 0; i < data.length; i++) {
           let temp2 = {
-            'name': data[i].name,
-            'score': data[i].score
+            name: data[i].name,
+            score: data[i].score,
           };
-          temp.push(temp2)
+          temp.push(temp2);
         }
         this.setState({
           ...this.state,
-          leaderboard: temp
-        })
-      })
+          leaderboard: temp,
+        });
+      });
   };
 
   private getTasks = () => {
-    return <p>Tasks</p>;
+    let contents: any[] = [];
+    for (let i = 0; i < this.state.tasks.length; i++) {
+      let options: any[] = [];
+      for (let j = 0; j < this.state.tasks[i].length; j++) {
+        options.push(
+          <MenuItem value={this.state.tasks[i].options[j].points}>
+            {this.state.tasks[i].options[j].type}
+          </MenuItem>
+        );
+      }
+      let temp = (
+        <React.Fragment>
+          <Card>
+            <Typography variant="h4">{this.state.tasks[i].cat}</Typography>
+            <Typography variant="h5">{this.state.tasks[i].task}</Typography>
+            <Button>{"Redeem upto " + this.state.tasks[i].mP}</Button>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Age"
+              onChange={(event) => {
+                let temp2 = this.state.scores;
+                temp2[i] = parseInt(event.target.value as any);
+
+                let updated_score = 0;
+                for (let k = 0; k < temp2.length; k++)
+                  updated_score += temp2[k];
+                this.setState({
+                  ...this.state,
+                  scores: temp2,
+                  currentScore: updated_score,
+                });
+              }}
+            >
+              {options}
+            </Select>
+          </Card>
+        </React.Fragment>
+      );
+      contents.push(temp);
+    }
+    return (
+      <React.Fragment>
+        {contents}
+      </React.Fragment>
+    )
   };
 
   private getLeaderboard = () => {
