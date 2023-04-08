@@ -27,6 +27,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import RedeemIcon from "@mui/icons-material/Redeem";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -38,13 +39,39 @@ export default class Component extends React.Component<any, any> {
       tasks: [],
       scores: [],
       maxPoints: 0,
+      redeemData: [],
     };
   }
 
   public componentDidMount(): void {
     this.getLeaderboardData();
     this.getTaskData();
+    this.getRedeemData();
   }
+
+  private getRedeemData = () => {
+    fetch("http://10.153.54.223:5000/redeem/data")
+      .then((response) => response.json())
+      .then((data) => {
+        let temp: any[] = [];
+
+        for (let i = 0; i < data.length; i++) {
+          let temp2 = {
+            product: data[i].product,
+            points: data[i].points,
+          };
+
+          temp.push(temp2);
+        }
+
+        this.setState({
+          ...this.state,
+          redeemData: temp,
+        });
+
+        console.log("rendeem data : ", data);
+      });
+  };
 
   private getTaskData = () => {
     fetch("http://10.153.54.223:5000/tasks/data")
@@ -227,11 +254,36 @@ export default class Component extends React.Component<any, any> {
     );
   };
 
+  private getRedeemPage = () => {
+    let menu: any[] = [];
+    for (let i = 0; i < this.state.redeemData.length; i++) {
+      let temp = (
+        <Card sx={{ margin: '20px', boxShadow: 12, borderRadius: "2px" }}>
+          <CardContent>
+            <Typography variant="h4">
+              {" "}
+              {this.state.redeemData[i].product}{" "}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button>
+              {"Redeem using " + this.state.redeemData[i].points + " points"}
+            </Button>
+          </CardActions>
+        </Card>
+      );
+      menu.push(temp);
+    }
+    return <React.Fragment>{menu}</React.Fragment>;
+  };
+
   private getData = () => {
     if (this.state.bottomView === 0) {
       return this.getTasks();
-    } else {
+    } else if (this.state.bottomView === 1) {
       return this.getLeaderboard();
+    } else {
+      return this.getRedeemPage();
     }
   };
 
@@ -317,6 +369,10 @@ export default class Component extends React.Component<any, any> {
                   <BottomNavigationAction
                     label="Leaderboard"
                     icon={<LeaderboardIcon />}
+                  />
+                  <BottomNavigationAction
+                    label="Redeem Points"
+                    icon={<RedeemIcon />}
                   />
                 </BottomNavigation>
               </div>
