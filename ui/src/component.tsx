@@ -111,6 +111,7 @@ export default class Component extends React.Component<any, any> {
     fetch("http://10.153.54.223:5000/users/data")
       .then((response) => response.json())
       .then((data) => {
+        console.log("leaderboard : ", data)
         let temp: any[] = [];
         for (let i = 0; i < data.length; i++) {
           let temp2 = {
@@ -126,14 +127,18 @@ export default class Component extends React.Component<any, any> {
       });
   };
 
-  private updateScore = () => {
+  private updateScore = (updated_score: any) => {
+    console.log("updating score with : ", updated_score);
     fetch("http://10.153.54.223:5000/users/6431cc23e7b681cd654cfa19", {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ score: this.state.currentScore }),
-    }).then((_) => this.getLeaderboardData());
+      body: JSON.stringify({ score: updated_score }),
+    }).then((data) => {
+      console.log("Put action resposne : ", data);
+      this.getLeaderboardData()
+    });
   };
 
   private getTasks = () => {
@@ -171,7 +176,7 @@ export default class Component extends React.Component<any, any> {
                     scores: temp2,
                     currentScore: updated_score,
                   });
-                  this.updateScore();
+                  this.updateScore(updated_score);
                 }}
               >
                 {options}
@@ -198,7 +203,7 @@ export default class Component extends React.Component<any, any> {
                   scores: temp2,
                   currentScore: updated_score,
                 });
-                this.updateScore();
+                this.updateScore(updated_score);
               }
             }}
           >
