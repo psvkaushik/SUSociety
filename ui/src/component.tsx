@@ -14,6 +14,8 @@ import {
   CardContent,
   InputLabel,
   FormControl,
+  CardActionArea,
+  CardMedia,
 } from "@mui/material";
 import {
   CircularProgressbarWithChildren,
@@ -28,6 +30,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import RedeemIcon from "@mui/icons-material/Redeem";
+import "animate.css";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -59,6 +62,8 @@ export default class Component extends React.Component<any, any> {
           let temp2 = {
             product: data[i].product,
             points: data[i].points,
+            image: "http://10.153.54.223:5000" + data[i].image_link,
+            product_link: data[i].product_link,
           };
 
           temp.push(temp2);
@@ -107,6 +112,7 @@ export default class Component extends React.Component<any, any> {
     fetch("http://10.153.54.223:5000/users/data")
       .then((response) => response.json())
       .then((data) => {
+        console.log("leaderboard : ", data);
         let temp: any[] = [];
         for (let i = 0; i < data.length; i++) {
           let temp2 = {
@@ -122,14 +128,18 @@ export default class Component extends React.Component<any, any> {
       });
   };
 
-  private updateScore = () => {
+  private updateScore = (updated_score: any) => {
+    console.log("updating score with : ", updated_score);
     fetch("http://10.153.54.223:5000/users/6431cc23e7b681cd654cfa19", {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ score: this.state.currentScore }),
-    }).then((_) => this.getLeaderboardData());
+      body: JSON.stringify({ score: updated_score }),
+    }).then((data) => {
+      console.log("Put action resposne : ", data);
+      this.getLeaderboardData();
+    });
   };
 
   private getTasks = () => {
@@ -167,7 +177,7 @@ export default class Component extends React.Component<any, any> {
                     scores: temp2,
                     currentScore: updated_score,
                   });
-                  this.updateScore();
+                  this.updateScore(updated_score);
                 }}
               >
                 {options}
@@ -194,7 +204,7 @@ export default class Component extends React.Component<any, any> {
                   scores: temp2,
                   currentScore: updated_score,
                 });
-                this.updateScore();
+                this.updateScore(updated_score);
               }
             }}
           >
@@ -204,8 +214,12 @@ export default class Component extends React.Component<any, any> {
       }
 
       let temp = (
-        <div style={{ marginTop: "10px", marginBottom: "20px" }}>
+        <div
+          style={{ marginTop: "10px", marginBottom: "20px" }}
+          className="animate__animated animate__fadeInUp base-background"
+        >
           <Card
+            className="leaf-background"
             style={{ margin: "10px", border: "2px" }}
             sx={{ boxShadow: 12, borderRadius: "2px" }}
           >
@@ -258,7 +272,18 @@ export default class Component extends React.Component<any, any> {
     let menu: any[] = [];
     for (let i = 0; i < this.state.redeemData.length; i++) {
       let temp = (
-        <Card sx={{ margin: '20px', boxShadow: 12, borderRadius: "2px" }}>
+        <Card
+          sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }}
+          className="leaf-background animate__animated"
+        >
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={this.state.redeemData[i].image}
+              alt="Image coming soon!"
+            />
+          </CardActionArea>
           <CardContent>
             <Typography variant="h4">
               {" "}
@@ -266,7 +291,14 @@ export default class Component extends React.Component<any, any> {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button>
+            <Button
+              onClick={(_) => {
+                window.open(
+                  this.state.redeemData[i].product_link,
+                  "_blank" // <- This is what makes it open in a new window.
+                );
+              }}
+            >
               {"Redeem using " + this.state.redeemData[i].points + " points"}
             </Button>
           </CardActions>
@@ -300,14 +332,22 @@ export default class Component extends React.Component<any, any> {
       >
         <Paper elevation={3} style={{ height: "100%", width: "100%" }}>
           <div id="title" style={{ width: "100%" }}>
-            <AppBar position="static" style={{ backgroundColor: "#8bc34a" }}>
+            <AppBar
+              position="static"
+              style={{ backgroundColor: "#8bc34a" }}
+              className="animate__animated animate__fadeInDownBig"
+            >
               <Typography variant="h2" noWrap>
                 GreenBoard
               </Typography>
             </AppBar>
           </div>
           <div id="body" style={{ marginTop: "5px", width: "100%" }}>
-            <AppBar position="static" color="transparent">
+            <AppBar
+              position="static"
+              color="transparent"
+              className="animate__animated animate__fadeInDownBig"
+            >
               <div
                 style={{
                   display: "flex",
@@ -316,9 +356,7 @@ export default class Component extends React.Component<any, any> {
                 }}
               >
                 <Typography variant="h3" style={{ width: "fit-content" }}>
-                  {"Your current score : " +
-                    this.state.currentScore +
-                    " points."}
+                  {"Score : " + this.state.currentScore}
                 </Typography>
                 <div
                   style={{
