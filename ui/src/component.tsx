@@ -28,6 +28,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import RedeemIcon from "@mui/icons-material/Redeem";
+import "animate.css";
 
 export default class Component extends React.Component<any, any> {
   constructor(props: any) {
@@ -204,7 +205,10 @@ export default class Component extends React.Component<any, any> {
       }
 
       let temp = (
-        <div style={{ marginTop: "10px", marginBottom: "20px" }}>
+        <div
+          style={{ marginTop: "10px", marginBottom: "20px" }}
+          className="animate__animated animate__fadeInUp"
+        >
           <Card
             style={{ margin: "10px", border: "2px" }}
             sx={{ boxShadow: 12, borderRadius: "2px" }}
@@ -258,7 +262,7 @@ export default class Component extends React.Component<any, any> {
     let menu: any[] = [];
     for (let i = 0; i < this.state.redeemData.length; i++) {
       let temp = (
-        <Card sx={{ margin: '20px', boxShadow: 12, borderRadius: "2px" }}>
+        <Card sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }}>
           <CardContent>
             <Typography variant="h4">
               {" "}
@@ -300,14 +304,22 @@ export default class Component extends React.Component<any, any> {
       >
         <Paper elevation={3} style={{ height: "100%", width: "100%" }}>
           <div id="title" style={{ width: "100%" }}>
-            <AppBar position="static" style={{ backgroundColor: "#8bc34a" }}>
+            <AppBar
+              position="static"
+              style={{ backgroundColor: "#8bc34a" }}
+              className="animate__animated animate__fadeInDownBig"
+            >
               <Typography variant="h2" noWrap>
                 GreenBoard
               </Typography>
             </AppBar>
           </div>
           <div id="body" style={{ marginTop: "5px", width: "100%" }}>
-            <AppBar position="static" color="transparent">
+            <AppBar
+              position="static"
+              color="transparent"
+              className="animate__animated animate__fadeInDownBig"
+            >
               <div
                 style={{
                   display: "flex",
@@ -316,9 +328,7 @@ export default class Component extends React.Component<any, any> {
                 }}
               >
                 <Typography variant="h3" style={{ width: "fit-content" }}>
-                  {"Your current score : " +
-                    this.state.currentScore +
-                    " points."}
+                  {"Score : " + this.state.currentScore}
                 </Typography>
                 <div
                   style={{
