@@ -207,9 +207,10 @@ export default class Component extends React.Component<any, any> {
       let temp = (
         <div
           style={{ marginTop: "10px", marginBottom: "20px" }}
-          className="animate__animated animate__fadeInUp"
+          className="animate__animated animate__fadeInUp base-background"
         >
           <Card
+            className="leaf-background"
             style={{ margin: "10px", border: "2px" }}
             sx={{ boxShadow: 12, borderRadius: "2px" }}
           >
@@ -262,7 +263,7 @@ export default class Component extends React.Component<any, any> {
     let menu: any[] = [];
     for (let i = 0; i < this.state.redeemData.length; i++) {
       let temp = (
-        <Card sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }}>
+        <Card sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }} className="leaf-background animate__animated">
           <CardContent>
             <Typography variant="h4">
               {" "}
