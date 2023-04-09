@@ -13,9 +13,6 @@ client = MongoClient(f"mongodb+srv://krishnasaurabh:{MONGO_PASS}@susociety.yftuk
 db = client.sustainable_society
 collection = db.phones
 
-# delete all data from MongoDB
-collection.delete_many({})
-
 # define route to retrieve data from MongoDB
 @phones_bp.route('/data', methods=['GET'])
 def get_data():
