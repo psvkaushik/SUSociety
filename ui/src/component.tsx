@@ -63,6 +63,7 @@ export default class Component extends React.Component<any, any> {
             product: data[i].product,
             points: data[i].points,
             image: "http://10.153.54.223:5000" + data[i].image_link,
+            product_link: data[i].product_link,
           };
 
           temp.push(temp2);
@@ -111,7 +112,7 @@ export default class Component extends React.Component<any, any> {
     fetch("http://10.153.54.223:5000/users/data")
       .then((response) => response.json())
       .then((data) => {
-        console.log("leaderboard : ", data)
+        console.log("leaderboard : ", data);
         let temp: any[] = [];
         for (let i = 0; i < data.length; i++) {
           let temp2 = {
@@ -137,7 +138,7 @@ export default class Component extends React.Component<any, any> {
       body: JSON.stringify({ score: updated_score }),
     }).then((data) => {
       console.log("Put action resposne : ", data);
-      this.getLeaderboardData()
+      this.getLeaderboardData();
     });
   };
 
@@ -290,7 +291,14 @@ export default class Component extends React.Component<any, any> {
             </Typography>
           </CardContent>
           <CardActions>
-            <Button>
+            <Button
+              onClick={(_) => {
+                window.open(
+                  this.state.redeemData[i].product_link,
+                  "_blank" // <- This is what makes it open in a new window.
+                );
+              }}
+            >
               {"Redeem using " + this.state.redeemData[i].points + " points"}
             </Button>
           </CardActions>
