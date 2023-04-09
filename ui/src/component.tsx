@@ -14,6 +14,8 @@ import {
   CardContent,
   InputLabel,
   FormControl,
+  CardActionArea,
+  CardMedia,
 } from "@mui/material";
 import {
   CircularProgressbarWithChildren,
@@ -60,6 +62,7 @@ export default class Component extends React.Component<any, any> {
           let temp2 = {
             product: data[i].product,
             points: data[i].points,
+            image: "http://10.153.54.223:5000" + data[i].image_link,
           };
 
           temp.push(temp2);
@@ -263,7 +266,18 @@ export default class Component extends React.Component<any, any> {
     let menu: any[] = [];
     for (let i = 0; i < this.state.redeemData.length; i++) {
       let temp = (
-        <Card sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }} className="leaf-background animate__animated">
+        <Card
+          sx={{ margin: "20px", boxShadow: 12, borderRadius: "2px" }}
+          className="leaf-background animate__animated"
+        >
+          <CardActionArea>
+            <CardMedia
+              component="img"
+              height="140"
+              image={this.state.redeemData[i].image}
+              alt="Image coming soon!"
+            />
+          </CardActionArea>
           <CardContent>
             <Typography variant="h4">
               {" "}
